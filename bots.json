@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "name": "Lakasno Odmold",
+    "uid": "61572685539744",
+    "botname": "Good Boy",
+    "prefix": "*",
+    "admins": [
+      "61569790299591"
+    ],
+    "username": "Lakasno Odmold",
+    "password": "0Astoasto",
+    "time": 0,
+    "thumbSrc": "https://scontent-ord5-3.xx.fbcdn.net/v/t39.30808-1/484979829_122117933468756184_7378294195382985330_n.jpg?stp=cp0_dst-jpg_s32x32_tt6&_nc_cat=100&ccb=1-7&_nc_sid=6e7d21&_nc_eui2=AeFXmqBHNhJIbSUYDouYtyGxMgu1vAFml9gyC7W8AWaX2JyeE-nOxwcUpoiznzqTdLdmrOQ4CqHRXNTwEklnqf7Y&_nc_ohc=SaKQwIqeH6YQ7kNvwFMvT73&_nc_oc=AdkDyATGHAVEjb_gnvxrE_edfj7LxgEF-buPElamj-kq2Gv3hjb-9v-jx0GnUERBWrs&_nc_zt=24&_nc_ht=scontent-ord5-3.xx&_nc_gid=yUEtiWjTikW6f7X8AitMAA&oh=00_AfHczhxIPpapiOO2qyor0GNfvvmqd7fsRwlVMT1vrmu52A&oe=67FE106A",
+    "profileUrl": "https://www.facebook.com/profile.php?id=61572685539744",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikxha2Fzbm8gT2Rtb2xkIiwicGFzc3dvcmQiOiIwQXN0b2FzdG8iLCJpYXQiOjE3NDQzMTczMDMsImV4cCI6MTc0NDMyMDkwM30.47a93r5kFuZMOBak7wnXdGg70sCfxscXuthf__TPfe4"
+  }
+]
