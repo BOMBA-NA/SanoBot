@@ -1,7 +1,7 @@
 {
-  "author": "ryuko",
+  "author": "Mot",
   "language": "english",
-  "allowinbox": false,
+  "allowinbox": true,
   "adminonly": false,
   "autocreatedb": true,
   "approval": false,
@@ -9,15 +9,15 @@
   "autopost": true,
   "email": "sanjivfresh@gmail.com",
   "operators": [
-    "100091459940475"
+    "61569790299591"
   ],
   "autorestart": {
-    "status": false,
+    "status": true,
     "time": 180,
     "note": "the system is automatically restarts in 3 hours"
   },
   "autoDeleteCache": {
-    "status": false,
+    "status": true,
     "time": 60,
     "note": "auto delete caches in 1 hour, kindly set the status to true, if you dont want to delete caches, set the status to false."
   },
@@ -32,10 +32,10 @@
     "listenTyping": false,
     "updatePresence": false,
     "forceLogin": false,
-    "autoMarkDelivery": false,
-    "autoMarkRead": false,
+    "autoMarkDelivery": true,
+    "autoMarkRead": true,
     "autoReconnect": true,
-    "online": false,
+    "online": true,
     "emitReady": false,
     "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
   },

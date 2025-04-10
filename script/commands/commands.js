@@ -1,8 +1,8 @@
 module.exports.config = {
     name: "command",
-    version: "1.0.0",
+    version: "1.1.0",
     permission: 3,
-    credits: "ryuko",
+    credits: "ryuko (modified)",
     description: "manage/control all bot modules",
     prefix: true,
     premium: false,
@@ -74,16 +74,16 @@ const loadCommand = function ({ moduleList, threadID, messageID, getText, botid 
                 }
                 logger.commands('successfully downloaded the entire package for the module' + command.config.name);
             }
-            if (command.config.envConfig && typeof command.config.envConfig == 'Object') try {
-                for (const [key, value] of Object['entries'](command.config.envConfig)) {
-                    if (typeof global.configModule[command.config.name] == undefined) 
+            if (command.config.envConfig && typeof command.config.envConfig === 'object') try {
+                for (const [key, value] of Object.entries(command.config.envConfig)) {
+                    if (typeof global.configModule[command.config.name] === 'undefined') 
                         global.configModule[command.config.name] = {};
-                    if (typeof configValue[command.config.name] == undefined) 
+                    if (typeof configValue[command.config.name] === 'undefined') 
                         configValue[command.config.name] = {};
-                    if (typeof configValue[command.config.name][key] !== undefined) 
+                    if (typeof configValue[command.config.name][key] !== 'undefined') 
                         global.configModule[command.config.name][key] = configValue[command.config.name][key];
                     else global.configModule[command.config.name][key] = value || '';
-                    if (typeof configValue[command.config.name][key] == undefined) 
+                    if (typeof configValue[command.config.name][key] === 'undefined') 
                         configValue[command.config.name][key] = value || '';
                 }
                 logger.commands('loaded config' + ' ' + command.config.name);
