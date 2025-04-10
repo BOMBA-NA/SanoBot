@@ -4,7 +4,7 @@ module.exports = async ({ api, event }) => {
   const configCustom = {
     autosetbio: {
       status: true,
-      bio: `prefix : ${prefix}`,
+      bio: `prefix : ${global.config.prefix || "!"}`,
       note: 'automatically change the bot bio.'
     },
     greetings: {

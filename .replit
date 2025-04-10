@@ -4,7 +4,7 @@ modules = ["nodejs-20"]
 channel = "stable-24_05"
 
 [workflows]
-runButton = "Project"
+runButton = "RunBot"
 
 [[workflows.workflow]]
 name = "Project"
@@ -24,6 +24,15 @@ agentRequireRestartOnSave = false
 
 [[workflows.workflow.tasks]]
 task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[[workflows.workflow]]
+name = "RunBot"
+author = 41328763
+mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
