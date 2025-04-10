@@ -4,12 +4,15 @@ const path = require("path");
 module.exports.config = {
   name: "load",
   version: "1.0.0",
-  hasPermssion: 2, // Admin permission only
+  permission: 2, // Admin permission only
   credits: "Ryuko Developer",
+  prefix: true,
+  premium: false,
   description: "Load/Reload/Unload command files",
-  commandCategory: "system",
+  category: "system",
   usages: "{prefix}load [load/loadAll/unload/unloadAll/info] [command name (if applicable)]",
-  cooldowns: 5
+  cooldowns: 5,
+  dependencies: []
 };
 
 module.exports.run = async function({ api, event, args, client }) {
@@ -118,9 +121,9 @@ module.exports.run = async function({ api, event, args, client }) {
 📝 Command Information: ${configInfo.name}
 🧩 Version: ${configInfo.version}
 👨‍💻 Credits: ${configInfo.credits}
-🔒 Permission: ${configInfo.hasPermssion}
+🔒 Permission: ${configInfo.permission}
 📋 Description: ${configInfo.description || "No description"}
-📚 Category: ${configInfo.commandCategory || "No category"}
+📚 Category: ${configInfo.category || "No category"}
 ⌨️ Usage: ${configInfo.usages || "No usage provided"}
 ⏱️ Cooldown: ${configInfo.cooldowns || 0} seconds
       `;
