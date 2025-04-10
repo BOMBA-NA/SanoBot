@@ -1,6 +1,11 @@
 const { join, resolve } = require('path');
 const fs = require('fs-extra');
-const chalk = require("chalk");
+// Use a simple color function instead of chalk
+const chalk = {
+  blueBright: (text) => text,
+  greenBright: (text) => text,
+  redBright: (text) => text
+};
 const path = require('path');
 const log = require("../utility/logs.js");
 

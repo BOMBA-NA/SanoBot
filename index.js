@@ -2,12 +2,12 @@
 
 console.clear();
 const { spawn } = require("child_process");
-const chalk = require('chalk');
+// Removed chalk dependency
 const fs = require('fs-extra')
 const path = require('path');
 
 function startBot(message) {
-    (message) ? console.info(chalk.blue(message.toUpperCase())) : "";
+    (message) ? console.info(message.toUpperCase()) : "";
 
   const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "--no-warnings", "main.js"], {
         cwd: __dirname,
