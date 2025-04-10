@@ -72,18 +72,19 @@ module.exports.run = async function ({ api, event, args, getText, botname, prefi
   const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
   const autoUnsend  = true;
   const delayUnsend = 60;
-  
+
   if (!command) {
     const commandList = Array.from(commands.values());
     const categories = new Set(commandList.map((cmd) => cmd.config.category.toLowerCase()));
     const categoryCount = categories.size;
 
-    const categoryNames = Array.from(categories);
-    const itemsPerPage = 10;
-    const totalPages = Math.ceil(categoryNames.length / itemsPerPage);
+    // If searching for a specific category
+    if (args[0] && !isNaN(args[0])) {
+      const categoryNames = Array.from(categories);
+      const itemsPerPage = 10;
+      const totalPages = Math.ceil(categoryNames.length / itemsPerPage);
 
-    let currentPage = 1;
-    if (args[0]) {
+      let currentPage = 1;
       const parsedPage = parseInt(args[0]);
       if (
         !isNaN(parsedPage) &&
@@ -93,76 +94,111 @@ module.exports.run = async function ({ api, event, args, getText, botname, prefi
         currentPage = parsedPage;
       } else {
         return api.sendMessage(
-          `oops, you went too far. please choose a page between 1 and ${totalPages}.`,
+          `⚠️ Invalid page number. Please choose a page between 1 and ${totalPages}.`,
           threadID,
           messageID
         );
       }
-    }
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    const endIdx = startIdx + itemsPerPage;
-    const visibleCategories = categoryNames.slice(startIdx, endIdx);
 
-    let msg = "";
-    for (let i = 0; i < visibleCategories.length; i++) {
-      const category = visibleCategories[i];
-      const categoryCommands = commandList.filter(
-        (cmd) =>
-          cmd.config.category.toLowerCase() === category
-      );
-      const commandNames = categoryCommands.map((cmd) => cmd.config.name);
-      const numberFont = [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-      ];
-      msg += `${
-        category.charAt(0).toUpperCase() + category.slice(1).toUpperCase()
-      } CATEGORY\n${commandNames.join(", ")}\n\n`
-    }
-    const numberFontPage = [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-    ];
-    msg += `PAGE ${numberFontPage[currentPage - 1]} OF ${
-      numberFontPage[totalPages - 1]
-    }\n\n`;
-    msg += getText("helpList", commands.size, categoryCount, prefix);
-    const msgg = {
-  body: `EXISTING COMMANDS AND CATEGORIES OF ${botname.toUpperCase()} AI\n\n` + msg + `\n\n`
-    };
+      const startIdx = (currentPage - 1) * itemsPerPage;
+      const endIdx = startIdx + itemsPerPage;
+      const visibleCategories = categoryNames.slice(startIdx, endIdx);
 
-    const sentMessage = await api.sendMessage(msgg, threadID, async (error, info) => {
+      let msg = "";
+      for (let i = 0; i < visibleCategories.length; i++) {
+        const category = visibleCategories[i];
+        const categoryCommands = commandList.filter(
+          (cmd) => cmd.config.category.toLowerCase() === category
+        );
+        const commandNames = categoryCommands.map((cmd) => cmd.config.name);
+
+        msg += `📁 ${category.charAt(0).toUpperCase() + category.slice(1).toUpperCase()} CATEGORY\n`;
+        msg += `${commandNames.join(", ")}\n\n`;
+      }
+
+      msg += `📄 PAGE ${currentPage} OF ${totalPages}\n\n`;
+      msg += getText("helpList", commands.size, categoryCount, prefix);
+
+      const msgg = {
+        body: `📋 COMMANDS AND CATEGORIES OF ${botname.toUpperCase()} AI\n\n` + msg + `\n\n`
+      };
+    } 
+    // If searching for a specific category by name
+    else if (args[0]) {
+      const searchCategory = args[0].toLowerCase();
+      const categoryExists = Array.from(categories).some(cat => cat.includes(searchCategory));
+
+      if (!categoryExists) {
+        return api.sendMessage(
+          `⚠️ Category "${args[0]}" not found. Use "${prefix}help" to see all categories.`,
+          threadID,
+          messageID
+        );
+      }
+
+      const filteredCategories = Array.from(categories).filter(cat => cat.includes(searchCategory));
+      let msg = "";
+
+      for (const category of filteredCategories) {
+        const categoryCommands = commandList.filter(
+          (cmd) => cmd.config.category.toLowerCase() === category
+        );
+
+        msg += `📁 ${category.charAt(0).toUpperCase() + category.slice(1).toUpperCase()} CATEGORY\n\n`;
+
+        for (const cmd of categoryCommands) {
+          msg += `• ${prefix}${cmd.config.name} - ${cmd.config.description || "No description"}\n`;
+        }
+
+        msg += `\n`;
+      }
+
+      const msgg = {
+        body: `📋 COMMANDS IN ${args[0].toUpperCase()} CATEGORY\n\n${msg}`
+      };
+
+      const sentMessage = await api.sendMessage(msgg, threadID, async (error, info) => {
+        if (autoUnsend) {
+          await new Promise(resolve => setTimeout(resolve, delayUnsend * 500));
+          return api.unsendMessage(info.messageID);
+        } else return;
+      }, messageID);
+
+      return;
+    }
+    // Default view - show all categories
+    else {
+      const categoryNames = Array.from(categories);
+      const itemsPerPage = 10;
+      const totalPages = Math.ceil(categoryNames.length / itemsPerPage);
+
+      let msg = "";
+
+      // First display categories summary
+      msg += `📊 CATEGORIES (${categoryCount}):\n`;
+      categoryNames.sort().forEach((category, index) => {
+        const count = commandList.filter(cmd => cmd.config.category.toLowerCase() === category).length;
+        msg += `${index+1}. ${category.charAt(0).toUpperCase() + category.slice(1)} (${count} commands)\n`;
+      });
+
+      msg += `\n📝 USAGE:\n`;
+      msg += `• ${prefix}help [page number] - Browse commands by page\n`;
+      msg += `• ${prefix}help [category name] - View commands in a category\n`;
+      msg += `• ${prefix}help [command name] - Get details about a command\n\n`;
+
+      msg += getText("helpList", commands.size, categoryCount, prefix);
+
+      const msgg = {
+        body: `📋 COMMANDS AND CATEGORIES OF ${botname.toUpperCase()} AI\n\n` + msg + `\n\n`
+      };
+
+      const sentMessage = await api.sendMessage(msgg, threadID, async (error, info) => {
 			if (autoUnsend) {
 				await new Promise(resolve => setTimeout(resolve, delayUnsend * 500));
 				return api.unsendMessage(info.messageID);
 			} else return;
 		}, messageID);
+    }
   } else {
     return api.sendMessage(
       getText(
