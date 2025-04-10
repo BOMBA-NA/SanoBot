@@ -7,7 +7,7 @@ module.exports.config = {
 	description: "change the bot language",
   premium: false,
 	category: "admin",
-	usages: "[bangla] [english]",
+	usages: "[bangla] [english] [tagalog]",
 	cooldowns: 5
 };
 
@@ -30,10 +30,17 @@ module.exports.run = async ({ api, event, args, getText }) => {
                 return api.sendMessage(`language has been converted to english`, threadID, () => global.config.language = "english"); 
             }
             break;
+
+        case "tagalog":
+        case "tagalog":
+            {
+                return api.sendMessage(`Ang wika ay ginawang tagalog`)
+            }
+            break;
     
         default:
             {
-                return api.sendMessage("syntax error, use : language bangla/english", threadID, messageID);
+                return api.sendMessage("syntax error, use : language bangla/english/tagalog", threadID, messageID);
             }   
             break; 
             

@@ -14,19 +14,19 @@ module.exports.config = {
 
 module.exports.languages = {
   english: {
-    moduleInfo: "╭─❍「 %1 」❍─╮\n│ %2\n│\n│ Usage: %3\n│ Category: %4\n│ Cooldown: %5 seconds\n│ Permission: %6\n│ Developer: %7\n╰─────────────╯",
+    moduleInfo: "╭─❍[ %1 ]❍─╮\n│ %2\n│\n│ Usage: %3\n│ Category: %4\n│ Cooldown: %5 seconds\n│ Permission: %6\n│ Developer: %7\n╰─────────────╯",
     helpList: "There are %1 commands across %2 categories",
     user: "User",
     adminGroup: "Group Admin",
     adminBot: "Bot Admin",
     operatorBot: "Bot Operator",
     commandNotFound: "Command not found.",
-    helpHeader: "╭─❍「 COMMAND LIST 」❍─╮",
-    helpFooter: "╰─────────────────────╯\n• Type '%1help [command]' for details\n• Type '%1help [page]' to view other pages",
+    helpHeader: "╭─❍[ COMMAND LIST ]❍─╮",
+    helpFooter: "╰─────────────────╯\n• Type '%1help [command]' for details\n• Type '%1help [page]' to view other pages",
     pageInfo: "Page %1 of %2"
   },
   bangla: {
-    moduleInfo: "╭─❍「 %1 」❍─╮\n│ %2\n│\n│ ব্যবহার: %3\n│ বিভাগ: %4\n│ কুলডাউন: %5 সেকেন্ড\n│ অনুমতি: %6\n│ ডেভেলপার: %7\n╰─────────────╯",
+    moduleInfo: "╭─❍[ %1 ]❍─╮\n│ %2\n│\n│ ব্যবহার: %3\n│ বিভাগ: %4\n│ কুলডাউন: %5 সেকেন্ড\n│ অনুমতি: %6\n│ ডেভেলপার: %7\n╰─────────────╯",
     helpList: "মোট %1 টি কমান্ড এবং %2 টি বিভাগ আছে",
     user: "ব্যবহারকারী",
     adminGroup: "গ্রুপ অ্যাডমিন",
@@ -34,19 +34,19 @@ module.exports.languages = {
     operatorBot: "বট অপারেটর",
     commandNotFound: "কমান্ড পাওয়া যায়নি।",
     helpHeader: "╭─❍「 কমান্ড তালিকা 」❍─╮",
-    helpFooter: "╰─────────────────────╯\n• বিস্তারিত জানতে '%1help [কমান্ড]' টাইপ করুন\n• অন্য পৃষ্ঠা দেখতে '%1help [পৃষ্ঠা]' টাইপ করুন",
+    helpFooter: "╰─────────────────╯\n• বিস্তারিত জানতে '%1help [কমান্ড]' টাইপ করুন\n• অন্য পৃষ্ঠা দেখতে '%1help [পৃষ্ঠা]' টাইপ করুন",
     pageInfo: "পৃষ্ঠা %1 / %2"
   },
   tagalog: {
-    moduleInfo: "╭─❍「 %1 」❍─╮\n│ %2\n│\n│ Paggamit: %3\n│ Kategorya: %4\n│ Cooldown: %5 segundo\n│ Permisyon: %6\n│ Developer: %7\n╰─────────────╯",
+    moduleInfo: "╭─❍[ %1 ]❍─╮\n│ %2\n│\n│ Paggamit: %3\n│ Kategorya: %4\n│ Cooldown: %5 segundo\n│ Permisyon: %6\n│ Developer: %7\n╰─────────────╯",
     helpList: "Mayroong %1 na mga utos at %2 na mga kategorya",
     user: "User",
     adminGroup: "Group Admin",
     adminBot: "Bot Admin",
     operatorBot: "Bot Operator",
     commandNotFound: "Hindi nahanap ang utos.",
-    helpHeader: "╭─❍「 LISTAHAN NG MGA UTOS 」❍─╮",
-    helpFooter: "╰─────────────────────╯\n• I-type '%1help [utos]' para sa detalye\n• I-type '%1help [page]' para makita ang ibang pahina",
+    helpHeader: "╭─❍[ LISTAHAN NG UTOS ]❍─╮",
+    helpFooter: "╰─────────────────╯\n• I-type '%1help [utos]' para sa detalye\n• I-type '%1help [page]' para makita ang ibang pahina",
     pageInfo: "Pahina %1 ng %2"
   }
 };
