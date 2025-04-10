@@ -1,0 +1,115 @@
+
+# main.js
+main.commands=matagumpay na nai-load ang command %1
+main.events=matagumpay na nai-load ang event %1
+main.cmderr=hindi mai-load ang command %1, error: %2.
+main.evnterr=hindi mai-load ang event %1, error: %2.
+main.configload=nilo-load ang %1, file.
+main.configerr=hindi mai-load ang %1 file, error: %1.
+main.accountload=nilo-load ang %1 data.
+main.loadedacc=nai-load ang %1 data.
+main.accounterr=hindi mai-load ang %1, error: %2.
+main.emailNotfound=pakiusap ilagay ang iyong email sa %1 file.
+main.startloadCmd=\nNILO-LOAD ANG MGA COMMAND
+main.startloadEvnt=NILO-LOAD ANG MGA EVENTS
+main.cmdNameErr=ang pangalan ng %1 ay walang laman o maling format
+main.cmdCategoryErr=ang kategorya ng %1 ay walang laman o maling format
+main.premiumCmdErr=ang premium property ng %1 ay walang laman o maling format
+main.prefixCmdErr=ang prefix property ng %1 ay walang laman o maling format
+main.commandNameExist=ang command %1 ay naload na
+main.failedEvnt=nabigo sa pag-load ng %1 na maling format
+main.evNameExist=ang event %1 ay naload na
+
+main.successLogin=naka-login sa %1 file
+main.loadingLogin=NILO-LOAD ANG LOGIN SYSTEM
+main.appstateEmpty=ang appstate file na "%1" ay walang laman, inaalis ito
+main.loggingIn=nagla-login sa %1 file
+main.loginErr=may error sa pag-proseso ng appstate %1, error %2
+main.loginErrencounter=may naganap na error sa login session, pakisuri ang iyong console.
+main.loadingDatabase=NILO-LOAD ANG DATABASE SYSTEM
+main.databaseLoaded=nai-load ang %1 system
+main.data1=ang bot na ito ay ginawa ni ryuko, huwag baguhin ang credits.
+main.cantDeployData=hindi ma-deploy ang %1 system, error %1
+main.updateSystem=\nNILO-LOAD ANG UPDATE SYSTEM
+main.checkUpdate=naghahanap ng available na %1
+main.errorUpdate=nabigo sa pag-load ng %1, error : %2
+main.loadingUpdate=%1 ay nahanap, ina-update sa pinakabagong bersyon
+main.loadedUpdate=matagumpay na nai-load ang %1
+main.noFoundUpdates=gumagamit ka na ng pinakabagong file
+main.errUpdateCheck=hindi ma-check ang mga update, error : %1
+main.data2=nakatagpo ng error? mangyaring makipag-ugnayan sa akin sa facebook : www.facebook.com/profile/ryukodev
+main.data3=magsaya sa multiple appstate gamit ang ryuko v5
+    
+
+# includes/listen.js
+
+listen.startLoadEnvironment=magpatuloy sa pag-load ng environment variable.
+listen.loadedEnvironmentThread=matagumpay na nai-load ang thread environment variable 
+listen.loadedEnvironmentUser=matagumpay na nai-load ang user environment variable 
+listen.successLoadEnvironment=matagumpay na nai-load ang environment variable 
+listen.failLoadEnvironment=hindi ma-load ang environment variable, error : %1
+
+# includes/controller/currencies.js
+
+currencies.needObjectOrArray=dapat ay isang array o isang object o maaaring pareho.
+currencies.needObject=dapat ay isang object.
+currencies.needNumber=dapat ay isang number.
+
+# includes/controller/threads.js
+
+threads.needObjectOrArray=dapat ay isang Array o isang Object o maaaring pareho
+threads.needObject=dapat ay isang Object 
+
+# includes/controller/users.js
+
+users.needObjectOrArray=dapat ay isang Array o isang Object o maaaring pareho
+users.needObject=dapat ay isang Object
+
+# includes/handle/handleCommand.js
+
+handleCommand.userBanned=hindi ka maaaring gumamit ng bot.
+handleCommand.threadBanned=ang iyong thread ay hindi maaaring gumamit ng bot.
+handleCommand.commandNotExist=ang command na ginamit mo ay wala sa aming system, subukan ang "%1".
+handleCommand.commandThreadBanned=ang iyong thread ay hindi maaaring gumamit ng command "%1".
+handleCommand.commandUserBanned=hindi ka maaaring gumamit ng command "%1".
+handleCommand.threadNotAllowNSFW=ang iyong thread ay hindi pinapayagang gumamit ng NSFW commands.
+handleCommand.cantGetInfoThread=hindi makuha ang impormasyon ng iyong thread, error: %1
+handleCommand.permissionNotEnough=wala kang pahintulot na gamitin ang command "%1"
+handleCommand.cantSetMessageReaction=may hindi inaasahang error sa setMessageReaction, error: %1
+handleCommand.executeCommand=\noras at petsa : %1\ncommand na ginamit : %2\nuser id : %3\ngroup id : %4\nargs kasama : %5\nproseso time : %6ms
+handleCommand.commandError=may hindi inaasahang error sa paggamit ng command %1, error : %2.
+handleCommand.notMatched=ang command na ito ay hindi nangangailangan ng prefix na magsimula.
+handleCommand.noPrefix=ang command na ito ay walang command config na "usePrefix" property
+handleCommand.commandNotFound=ang command na ginamit mo ay wala.
+
+# includes/handle/handleCommandEvent.js
+
+handleCommandEvent.moduleError=May hindi inaasahang error sa paggamit ng command %1, error: %2.
+
+# includes/handle/handleCreateDatabase.js
+
+handleCreateDatabase.newThread=\nryuko - bagong grupo na natukoy %1.
+handleCreateDatabase.newUser=\nryuko - bagong user na natukoy %1.
+
+# includes/handle/handleEvent.js
+
+handleEvent.executeEvent=\noras at petsa : %1\nnaganap na event : %2\ngroup id : %3\nproseso time : %4ms
+handleEvent.eventError=may error sa pagsasagawa ng event %1, error: %2.
+
+# includes/handle/handleReaction.js
+
+handleReaction.missingValue=kulang ang value para sagutin ang iyong problema.
+handleReaction.executeError=May error sa pagsagot sa iyong problema, error: %1.
+
+# includes/handle/handleReply.js
+
+handleReply.missingValue=kulang ang value para sagutin ang iyong problema.
+handleReply.executeError=may error sa pagsagot sa iyong problema, error: %1.
+
+# includes/handle/handleSchedule.js
+
+handleSchedule.exectuteError=may error sa schedule sa module %1, error : %2.
+
+# utils/index.js
+
+utils.throwError=syntax error, gamitin ang %1help %2 para sa karagdagang detalye ng paggamit.
