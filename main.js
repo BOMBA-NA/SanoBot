@@ -19,6 +19,7 @@ const port = 8099;
 const cron = require('node-cron');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const autoUpdate = require('./main/utility/autoupdate.js');
 
 global.client = new Object({
     commands: new Map(),
@@ -61,7 +62,37 @@ global.editBots = require("./main/system/editconfig.js");
 
 
 console.clear();
-console.log(chalk.blue('LOADING MAIN SYSTEM'));
+
+// Generate banner with current theme
+const { activeTheme } = autoUpdate;
+const figlet = require('figlet');
+const gradient = require('gradient-string');
+
+// Create colorful gradient based on theme
+const bannerColors = [
+  activeTheme.info,
+  activeTheme.success,
+  activeTheme.warning,
+  activeTheme.error
+];
+
+// Generate fancy banner
+const banner = figlet.textSync(global.config.banner || "Sano Developer", {
+  font: "Standard",
+  horizontalLayout: "default",
+  verticalLayout: "default"
+});
+
+// Display banner with gradient colors
+console.log(gradient(...bannerColors)(banner));
+console.log(chalk.hex(activeTheme.info)('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'));
+console.log(chalk.hex(activeTheme.success)(' ➤ Author: ') + chalk.hex(activeTheme.warning)(global.config.author));
+console.log(chalk.hex(activeTheme.success)(' ➤ Credits: ') + chalk.hex(activeTheme.warning)('Mot'));
+console.log(chalk.hex(activeTheme.success)(' ➤ Theme: ') + chalk.hex(activeTheme.warning)(global.config.theme || 'neon'));
+console.log(chalk.hex(activeTheme.success)(' ➤ Version: ') + chalk.hex(activeTheme.warning)(packages.version));
+console.log(chalk.hex(activeTheme.info)('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'));
+
+console.log(chalk.hex(activeTheme.info)('LOADING MAIN SYSTEM'));
 app.use(express.json());
 app.use(express.static('public/main'));
 async function logOut(res, botId) {;
@@ -316,7 +347,7 @@ if (!global.config.email) {
 const commandsPath = "./script/commands";
 const commandsList = readdirSync(commandsPath).filter(command => command.endsWith('.js') && !global.config.disabledcmds.includes(command));
 
-console.log(chalk.blue(global.getText('main', 'startloadCmd')));
+console.log(chalk.hex(activeTheme.info)(global.getText('main', 'startloadCmd')));
 for (const command of commandsList) {
     try {
         const module = require(`${commandsPath}/${command}`);

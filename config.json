@@ -11,6 +11,8 @@
   "operators": [
     "61569790299591"
   ],
+  "theme": "neon",
+  "banner": "Sano Developer",
   "autorestart": {
     "status": true,
     "time": 180,
@@ -43,5 +45,10 @@
     "sqlite": {
       "storage": "botdata/database.sqlite"
     }
+  },
+  "autoUpdate": {
+    "enabled": true,
+    "interval": 24,
+    "repo": "ryukodeveloper/Ryuko-v5"
   }
 }
