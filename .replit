@@ -18,22 +18,13 @@ args = "FacebookBot"
 [[workflows.workflow]]
 name = "FacebookBot"
 author = "agent"
+mode = "parallel"
 
 [workflows.workflow.metadata]
 agentRequireRestartOnSave = false
 
 [[workflows.workflow.tasks]]
 task = "packager.installForAll"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "node index.js"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "RunBot"
-author = 41328763
-mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
