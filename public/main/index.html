@@ -887,7 +887,18 @@
           username: username,
           password: password
         })
-      }).then(response => response.json()).then(data => {
+      }).then(response => {
+        // Check if response is OK before trying to parse JSON
+        if (!response.ok) {
+          throw new Error('Server error: ' + response.status);
+        }
+        // Check content-type to make sure it's JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Received non-JSON response from server');
+        }
+        return response.json();
+      }).then(data => {
         if (data.token) {
           watchaDoin.style.color = "green";
           watchaDoin.textContent = "Logged in successfully.";
@@ -901,8 +912,9 @@
           return createButton.style.display = "";
         }
       }).catch(error => {
+        console.error(error);
         watchaDoin.style.color = "red";
-        watchaDoin.textContent = `something went wrong, try again later.`;
+        watchaDoin.textContent = "Error: " + error.message;
         return createButton.style.display = "";
       })
     }
@@ -910,6 +922,18 @@
       const command = document.querySelector('.cmd-container');
       try {
         const res = await fetch('/commands');
+        
+        // Check if response is OK before trying to parse JSON
+        if (!res.ok) {
+          throw new Error('Server error: ' + res.status);
+        }
+        
+        // Check content-type to make sure it's JSON
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Received non-JSON response from server');
+        }
+        
         const data = await res.json();
         command.innerHTML = "";
         const total = [];
@@ -1115,6 +1139,18 @@
       const userOnline = document.getElementById("user_online");
       try {
         const response = await fetch("/info");
+        
+        // Check if response is OK before trying to parse JSON
+        if (!response.ok) {
+          throw new Error('Server error: ' + response.status);
+        }
+        
+        // Check content-type to make sure it's JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Received non-JSON response from server');
+        }
+        
         const data = await response.json();
         userOnline.innerHTML = '';
         if (!data[0]) {

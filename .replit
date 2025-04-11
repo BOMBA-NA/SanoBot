@@ -4,7 +4,7 @@ modules = ["nodejs-20"]
 channel = "stable-24_05"
 
 [workflows]
-runButton = "RunBot"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -28,6 +28,7 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node index.js"
+waitForPort = 5000
 
 [[workflows.workflow]]
 name = "RunBot"
@@ -44,6 +45,10 @@ run = ["sh", "-c", "node index.js"]
 [[ports]]
 localPort = 3000
 externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
 
 [[ports]]
 localPort = 8099
