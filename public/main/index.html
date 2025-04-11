@@ -981,7 +981,7 @@
         });
       } catch (err) {
         command.innerHTML = `
-					<p class="cmddes" style="color: red;">An error occurred while loading commands</p>`
+                                        <p class="cmddes" style="color: red;">An error occurred while loading commands</p>`
       }
     }
     getCmd();
@@ -1080,7 +1080,18 @@
           username: username,
           password: password
         })
-      }).then(response => response.json()).then(data => {
+      }).then(response => {
+        // First check if the response is OK before trying to parse JSON
+        if (!response.ok) {
+          throw new Error('Server error: ' + response.status);
+        }
+        // Check content-type to make sure it's JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Received non-JSON response from server');
+        }
+        return response.json();
+      }).then(data => {
         if (data.data) {
           watchaDoin.style.color = "green";
           watchaDoin.textContent = data.data;
@@ -1096,7 +1107,7 @@
       }).catch(error => {
         console.error(error)
         watchaDoin.style.color = "red";
-        watchaDoin.textContent = String(error);
+        watchaDoin.textContent = "Error: " + error.message;
         return createButton.style.display = ""
       })
     }
@@ -1108,7 +1119,7 @@
         userOnline.innerHTML = '';
         if (!data[0]) {
           userOnline.innerHTML = `
-					<div style="font-size: 10px; color=gray;">there is no bot logged in</div>`;
+                                        <div style="font-size: 10px; color=gray;">there is no bot logged in</div>`;
         }
         data.forEach(user => {
           const {
@@ -1146,7 +1157,7 @@
       } catch (error) {
         console.error(error);
         userOnline.innerHTML = `
-					<div style="font-size: 10px; color: red;">An error occurred while fetching data.</div>`;
+                                        <div style="font-size: 10px; color: red;">An error occurred while fetching data.</div>`;
       }
     }
 
