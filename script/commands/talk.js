@@ -2,7 +2,7 @@ module.exports.config = {
      name: "talk",
      version: "1.1.0",
      permission: 0,
-     credits: "ryuko",
+     credits: "sano",
      premium: false,
      description: "Interactive AI chat with advanced features",
      prefix: false,
@@ -20,14 +20,18 @@ module.exports.onLoad = function() {
     const path = resolve(__dirname, 'system', 'system.json');
     if (!existsSync(path)) {
         const obj = {
-            ryuko: {},
+            sano: {},
             settings: {},
             conversations: {}
         };
         writeFileSync(path, JSON.stringify(obj, null, 4));
     } else {
         const data = require(path);
-        if (!data.hasOwnProperty('ryuko')) data.ryuko = {};
+        // Handle backward compatibility with ryuko
+        if (data.hasOwnProperty('ryuko') && !data.hasOwnProperty('sano')) {
+            data.sano = data.ryuko;
+        }
+        if (!data.hasOwnProperty('sano')) data.sano = {};
         if (!data.hasOwnProperty('settings')) data.settings = {};
         if (!data.hasOwnProperty('conversations')) data.conversations = {};
         writeFileSync(path, JSON.stringify(data, null, 4));
@@ -41,10 +45,10 @@ module.exports.handleEvent = async ({ api, event, args, Threads }) => {
     const path = resolve(__dirname, 'system', 'system.json');
    
     const data = require(path);
-    const { ryuko, conversations } = data;
+    const { sano, conversations } = data;
 
     // Skip if bot sends message or talk feature is not enabled for this thread
-    if (senderID === api.getCurrentUserID() || !ryuko.hasOwnProperty(threadID) || !ryuko[threadID]) {
+    if (senderID === api.getCurrentUserID() || !sano.hasOwnProperty(threadID) || !sano[threadID]) {
         return;
     }
 
@@ -112,7 +116,12 @@ module.exports.run = async ({ api, event, args, permssion }) => {
     const { threadID, messageID, senderID } = event;
     const database = require(path);
     
-    const { ryuko, settings, conversations } = database;
+    // Handle backward compatibility with ryuko key
+    if (database.hasOwnProperty('ryuko') && !database.hasOwnProperty('sano')) {
+        database.sano = database.ryuko;
+    }
+    
+    const { sano, settings, conversations } = database;
 
     if (!args[0]) { 
         return api.sendMessage("Usage:\n- talk on: Turn on talk mode\n- talk off: Turn off talk mode\n- talk clear: Clear conversation history\n- talk status: Check current talk status\n- talk [message]: Directly talk with AI without turning on talk mode", threadID, messageID);
@@ -120,13 +129,13 @@ module.exports.run = async ({ api, event, args, permssion }) => {
         switch(args[0].toLowerCase()) {
             case "on": {
                 if (permssion !== 1 && permssion !== 2) return api.sendMessage('Only group admins can use this command', threadID, messageID);
-                ryuko[threadID] = true;
+                sano[threadID] = true;
                 api.sendMessage("Talk mode is now enabled. The bot will respond to all messages in this chat.", threadID);
                 break;
             }
             case "off": {
                 if (permssion !== 1 && permssion !== 2) return api.sendMessage('Only group admins can use this command', threadID, messageID);
-                ryuko[threadID] = false;
+                sano[threadID] = false;
                 api.sendMessage("Talk mode is now disabled. The bot will only respond to commands.", threadID);
                 break;
             }
@@ -141,7 +150,7 @@ module.exports.run = async ({ api, event, args, permssion }) => {
                 break;
             }
             case "status": {
-                const status = ryuko[threadID] ? "enabled" : "disabled";
+                const status = sano[threadID] ? "enabled" : "disabled";
                 const historyCount = conversations[threadID] ? conversations[threadID].length : 0;
                 
                 api.sendMessage(`Talk mode is currently ${status}.\nConversation history: ${historyCount} messages stored.`, threadID);

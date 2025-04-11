@@ -2,12 +2,12 @@ module.exports.config = {
         name: "moneys",
         version: "1.0.2",
         permission: 0,
-        credits: "ryuko",
+        credits: "sano",
         prefix: false,
         premium: false,
         description: "check the amount of yourself or the person tagged",
         category: "without prefix",
-        usages: "[tag/all/top]",
+        usages: "[tag/all/top/give/pay]",
         cooldowns: 5
 };
 
@@ -47,7 +47,11 @@ module.exports.run = async function({ api, event, args, Currencies, getText }) {
         if (!args[0]) {
                 try {
                         const userData = await Currencies.getData(senderID);
-                        const money = userData.money || 0;
+                        // Fix for undefined money
+                        let money = 0;
+                        if (userData && userData.money !== undefined) {
+                            money = userData.money;
+                        }
                         
                         // Get user name for better display
                         const userInfo = await api.getUserInfo(senderID);
@@ -169,8 +173,65 @@ module.exports.run = async function({ api, event, args, Currencies, getText }) {
                 }
         }
 
+        // Pay/give money functionality
+        else if (args[0].toLowerCase() === "give" || args[0].toLowerCase() === "pay") {
+                try {
+                        // Check if all required parameters are provided
+                        if (Object.keys(event.mentions).length !== 1 || !args[1] || !args[2]) {
+                                return api.sendMessage(`Invalid usage. Correct format: ${this.config.name} give/pay @user [amount]`, threadID, messageID);
+                        }
+                        
+                        // Get mentioned user and amount
+                        const mentionID = Object.keys(mentions)[0];
+                        const amount = parseInt(args[2]);
+                        
+                        // Validate amount
+                        if (isNaN(amount) || amount <= 0) {
+                                return api.sendMessage("Invalid amount. Please enter a positive number.", threadID, messageID);
+                        }
+                        
+                        // Get sender's data
+                        const senderData = await Currencies.getData(senderID);
+                        let senderMoney = 0;
+                        if (senderData && senderData.money !== undefined) {
+                                senderMoney = senderData.money;
+                        }
+                        
+                        // Check if sender has enough money
+                        if (senderMoney < amount) {
+                                return api.sendMessage(`You don't have enough money. Your current balance is ${formatCurrency(senderMoney)}$.`, threadID, messageID);
+                        }
+                        
+                        // Get recipient's data
+                        const recipientData = await Currencies.getData(mentionID);
+                        let recipientMoney = 0;
+                        if (recipientData && recipientData.money !== undefined) {
+                                recipientMoney = recipientData.money;
+                        }
+                        
+                        // Transfer money
+                        await Currencies.decreaseMoney(senderID, amount);
+                        await Currencies.increaseMoney(mentionID, amount);
+                        
+                        // Get user info for better display
+                        const recipientInfo = await api.getUserInfo(mentionID);
+                        const recipientName = recipientInfo[mentionID].name || "User";
+                        
+                        return api.sendMessage({
+                                body: `Successfully transferred ${formatCurrency(amount)}$ to ${recipientName}!\n\nYour new balance: ${formatCurrency(senderMoney - amount)}$\n${recipientName}'s new balance: ${formatCurrency(recipientMoney + amount)}$`,
+                                mentions: [{
+                                        tag: recipientName,
+                                        id: mentionID
+                                }]
+                        }, threadID, messageID);
+                } catch (error) {
+                        console.error("Error transferring money:", error);
+                        return api.sendMessage("An error occurred while transferring money. Please try again later.", threadID, messageID);
+                }
+        }
+        
         // Invalid command usage
         else {
-                return api.sendMessage(`Invalid usage. Please use one of the following:\n- ${this.config.name}: Check your balance\n- ${this.config.name} @user: Check mentioned user's balance\n- ${this.config.name} all: Show balances of all group members\n- ${this.config.name} top: Show top 10 richest users`, threadID, messageID);
+                return api.sendMessage(`Invalid usage. Please use one of the following:\n- ${this.config.name}: Check your balance\n- ${this.config.name} @user: Check mentioned user's balance\n- ${this.config.name} all: Show balances of all group members\n- ${this.config.name} top: Show top 10 richest users\n- ${this.config.name} give/pay @user [amount]: Transfer money to another user`, threadID, messageID);
         }
 }
