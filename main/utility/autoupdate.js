@@ -60,6 +60,9 @@ const themes = {
 const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 const activeTheme = themes[config.theme] || themes.neon;
 
+// Export the activeTheme for use in other modules
+module.exports.activeTheme = activeTheme;
+
 // Format of log messages
 const formatLog = {
   update: (message) => chalk.hex(activeTheme.info)(`[UPDATE] ${message}`),

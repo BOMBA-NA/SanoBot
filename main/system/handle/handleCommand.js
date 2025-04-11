@@ -75,7 +75,8 @@ module.exports = function({ api, models, Users, Threads, Currencies }) {
       }
   
   
-      if (userBanned.has(senderID) || threadBanned.has(threadID) || allowinbox == ![] && senderID == threadID) {
+      // Check if it's a direct message (senderID == threadID) but always allow for admins/operators
+      if (userBanned.has(senderID) || threadBanned.has(threadID) || (allowinbox == false && senderID == threadID && !admins.includes(senderID.toString()) && !operators.includes(senderID.toString()))) {
         if (!admins.includes(senderID.toString()) && !operators.includes(senderID.toString()))
         {
           if (command && (command.config.name.toLowerCase() === commandName.toLowerCase()) && userBanned.has(senderID)) {

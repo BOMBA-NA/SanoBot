@@ -1,8 +1,8 @@
 {
-  "load": "fill",
-  "login": "login",
-  "error": "error",
-  "warn": "warn",
-  "cmd": "commands",
-  "evnts": "events"
+  "load": "LOADING",
+  "login": "LOGIN SYSTEM",
+  "error": "ERROR",
+  "warn": "WARNING",
+  "cmd": "COMMAND",
+  "evnts": "EVENT"
 }

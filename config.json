@@ -2,7 +2,7 @@
   "author": "Mot",
   "language": "tagalog",
   "allowinbox": true,
-  "adminonly": false,
+  "adminonly": true,
   "autocreatedb": true,
   "approval": false,
   "premium": false,
@@ -11,8 +11,9 @@
   "operators": [
     "61569790299591"
   ],
-  "theme": "neon",
-  "banner": "Sano Developer",
+  "theme": "red",
+  "themeNote": "Available themes: ghost, neon, blue, red, yellowred, yellow, hacker",
+  "banner": "Sano",
   "autorestart": {
     "status": true,
     "time": 180,
@@ -31,7 +32,7 @@
     "selfListen": false,
     "selfListenEvent": false,
     "listenEvents": true,
-    "listenTyping": false,
+    "listenTyping": true,
     "updatePresence": false,
     "forceLogin": false,
     "autoMarkDelivery": true,
