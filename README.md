@@ -1,8 +1,8 @@
 ### ABOUT ME
 
-**Name**: `Ryuko Developer`  
-**Age**: `18`  
-**Contact**: [Facebook](https://www.facebook.com/ryukodev)  
+**Name**: `Mot`  
+**Age**: `N/A`  
+**Contact**: [Facebook](https://www.facebook.com/Mot.mot.oyamat)  
 
 ---
 
@@ -25,9 +25,8 @@ To set up the project, follow these steps:
 ### SOURCES
 
 - **Original File**: [BotPack](https://replit.com/@YanMaglinte/BotPack?v=1) by `Yan Maglinte`  
-- **Modified Version**: [Ryuko](https://github.com/ryukodeveloper/Ryuko-V4) by `Ryuko Developer`  
-- **FCA Library**: [ws3-fca](https://www.npmjs.com/package/ws3-fca) by `Kenneth Aceberos`  
-- **Latest Version**: [Ryuko V5](https://www.github.com/ryukodeveloper/Ryuko-V5)
+- **Modified Version**: [Ryuko](https://github.com/BOMBA-NA/SanoBot) by `SanoBot Developer`  
+- **FCA Library**: [ws3-fca](https://www.npmjs.com/package/ws3-fca) by `Kenneth Aceberos`
 
 ---
 
@@ -46,7 +45,7 @@ To set up the project, follow these steps:
 module.exports.config = {
   name: "example",
   version: "1.0.0",
-  credits: "Ryuko Developer",
+  credits: "Sano Developer",
   permission: 0,
   description: "An example command",
   category: "Example",
@@ -102,7 +101,7 @@ module.exports.config = {
   name: "example", // Command name
   version: "1.0.0", // Command version
   permission: 0, // Permission level (0: all, 1: group admins, 2: bot admins, 3: bot operators)
-  credits: "Ryuko Developer", // Creator of the code
+  credits: "Sano Developer", // Creator of the code
   description: "An example command", // Command description
   prefix: false, // Use prefix (true/false)
   premium: false, // Enable premium feature (true/false)
