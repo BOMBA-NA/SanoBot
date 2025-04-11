@@ -25,7 +25,7 @@ To set up the project, follow these steps:
 ### SOURCES
 
 - **Original File**: [BotPack](https://replit.com/@YanMaglinte/BotPack?v=1) by `Yan Maglinte`  
-- **Modified Version**: [Ryuko](https://github.com/BOMBA-NA/SanoBot) by `SanoBot Developer`  
+- **Modified Version**: [SanoBot](https://github.com/BOMBA-NA/SanoBot) by `SanoBot Developer`  
 - **FCA Library**: [ws3-fca](https://www.npmjs.com/package/ws3-fca) by `Kenneth Aceberos`
 
 ---
