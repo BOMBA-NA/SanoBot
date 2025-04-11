@@ -1,8 +1,8 @@
 module.exports.config = {
     name: "command",
-    version: "1.1.0",
+    version: "1.0.0",
     permission: 3,
-    credits: "ryuko (modified)",
+    credits: "ryuko",
     description: "manage/control all bot modules",
     prefix: true,
     premium: false,
@@ -74,16 +74,16 @@ const loadCommand = function ({ moduleList, threadID, messageID, getText, botid 
                 }
                 logger.commands('successfully downloaded the entire package for the module' + command.config.name);
             }
-            if (command.config.envConfig && typeof command.config.envConfig === 'object') try {
-                for (const [key, value] of Object.entries(command.config.envConfig)) {
-                    if (typeof global.configModule[command.config.name] === 'undefined') 
+            if (command.config.envConfig && typeof command.config.envConfig == 'Object') try {
+                for (const [key, value] of Object['entries'](command.config.envConfig)) {
+                    if (typeof global.configModule[command.config.name] == undefined) 
                         global.configModule[command.config.name] = {};
-                    if (typeof configValue[command.config.name] === 'undefined') 
+                    if (typeof configValue[command.config.name] == undefined) 
                         configValue[command.config.name] = {};
-                    if (typeof configValue[command.config.name][key] !== 'undefined') 
+                    if (typeof configValue[command.config.name][key] !== undefined) 
                         global.configModule[command.config.name][key] = configValue[command.config.name][key];
                     else global.configModule[command.config.name][key] = value || '';
-                    if (typeof configValue[command.config.name][key] === 'undefined') 
+                    if (typeof configValue[command.config.name][key] == undefined) 
                         configValue[command.config.name][key] = value || '';
                 }
                 logger.commands('loaded config' + ' ' + command.config.name);
@@ -139,110 +139,50 @@ const unloadModule = function ({ moduleList, threadID, messageID, botid}) {
 module.exports.run = function ({ event, args, api, botid }) {
     
     const { readdirSync } = global.nodemodule["fs-extra"];
-    const { threadID, messageID, senderID } = event;
-
-    // Check permissions first
-    let operator = global.config.operators;
-    if (!operator.includes(senderID)) {
-        return api.sendMessage(`⚠️ Only bot operators can use this command.`, threadID, messageID);
-    }
-
-    // If no arguments provided, show help
-    if (!args[0]) {
-        return api.sendMessage(
-            `📋 Command Module Manager 📋\n\n` +
-            `Available commands:\n` +
-            `• command load [module1 module2...] - Load specific modules\n` +
-            `• command unload [module1 module2...] - Unload specific modules\n` +
-            `• command loadAll - Load all available modules\n` +
-            `• command unloadAll - Unload all modules except this one\n` +
-            `• command info [module] - Show information about a module`,
-            threadID, messageID
-        );
-    }
+    const { threadID, messageID } = event;
 
     var moduleList = args.splice(1, args.length);
+    let operator = global.config.operators;
+            if (!operator.includes(event.senderID)) return api.sendMessage(`only bot operators can use this command.`, event.threadID, event.messageID);
 
-    try {
-        switch (args[0].toLowerCase()) {
-            case "load": {
-                if (moduleList.length == 0) return api.sendMessage("⚠️ Module name cannot be empty.", threadID, messageID);
-                
-                api.sendMessage(`⏳ Loading ${moduleList.length} module(s)...`, threadID, messageID);
-                return loadCommand({ moduleList, threadID, messageID, botid });
-            }
-            case "unload": {
-                if (moduleList.length == 0) return api.sendMessage("⚠️ Module name cannot be empty.", threadID, messageID);
-                
-                // Don't allow unloading the command module itself
-                if (moduleList.includes("command")) {
-                    return api.sendMessage("⚠️ Cannot unload the command module itself.", threadID, messageID);
-                }
-                
-                api.sendMessage(`⏳ Unloading ${moduleList.length} module(s)...`, threadID, messageID);
-                return unloadModule({ moduleList, threadID, messageID, botid });
-            }
-            case "loadall": {
-                moduleList = readdirSync(__dirname).filter((file) => file.endsWith(".js") && !file.includes('example'));
-                moduleList = moduleList.map(item => item.replace(/\.js/g, ""));
-                
-                api.sendMessage(`⏳ Loading all ${moduleList.length} modules...`, threadID, messageID);
-                return loadCommand({ moduleList, threadID, messageID, botid });
-            }
-            case "unloadall": {
-                moduleList = readdirSync(__dirname).filter((file) => 
-                    file.endsWith(".js") && 
-                    !file.includes('example') && 
-                    !file.includes("command")
-                );
-                moduleList = moduleList.map(item => item.replace(/\.js/g, ""));
-                
-                api.sendMessage(`⏳ Unloading all ${moduleList.length} modules...`, threadID, messageID);
-                return unloadModule({ moduleList, threadID, messageID, botid });
-            }
-            case "info": {
-                if (moduleList.length == 0) {
-                    return api.sendMessage("⚠️ Please specify a module name.", threadID, messageID);
-                }
-                
-                const command = global.client.commands.get(moduleList.join("") || "");
-                if (!command) {
-                    return api.sendMessage("⚠️ The module you entered does not exist.", threadID, messageID);
-                }
-
-                const { name, version, permission, credits, cooldowns, dependencies, category, description, usages } = command.config;
-
-                return api.sendMessage(
-                    `📝 MODULE INFO: ${name.toUpperCase()} 📝\n\n` +
-                    `• Author: ${credits}\n` +
-                    `• Version: ${version}\n` +
-                    `• Category: ${category || "N/A"}\n` +
-                    `• Permission: ${
-                        (permission == 0) ? "User" : 
-                        (permission == 1) ? "Group Admin" : 
-                        (permission == 2) ? "Bot Admin" : 
-                        "Bot Operator"
-                    }\n` +
-                    `• Cooldown: ${cooldowns} seconds\n` +
-                    `• Description: ${description || "N/A"}\n` +
-                    `• Usage: ${usages || "N/A"}\n` +
-                    `• Dependencies: ${(Object.keys(dependencies || {})).join(", ") || "none"}`,
-                    threadID, messageID
-                );
-            }
-            default: {
-                return api.sendMessage(
-                    `⚠️ Invalid command option "${args[0]}"\n\n` +
-                    `Available options: load, unload, loadAll, unloadAll, info`,
-                    threadID, messageID
-                );
-            }
+    switch (args[0]) {
+        case "load": {
+            if (moduleList.length == 0) return api.sendMessage("module name cannot be empty.", threadID, messageID);
+            else return loadCommand({ moduleList, threadID, messageID, botid });
         }
-    } catch (error) {
-        return api.sendMessage(
-            `❌ An error occurred: ${error.message}\n\n` +
-            `Stack trace: ${error.stack}`,
-            threadID, messageID
-        );
+        case "unload": {
+            if (moduleList.length == 0) return api.sendMessage("module name cannot be empty.", threadID, messageID);
+            else return unloadModule({ moduleList, threadID, messageID, botid });
+        }
+        case "loadAll": {
+            moduleList = readdirSync(__dirname).filter((file) => file.endsWith(".js") && !file.includes('example'));
+            moduleList = moduleList.map(item => item.replace(/\.js/g, ""));
+            return loadCommand({ moduleList, threadID, messageID, botid });
+        }
+        case "unloadAll": {
+            moduleList = readdirSync(__dirname).filter((file) => file.endsWith(".js") && !file.includes('example') && !file.includes("command"));
+            moduleList = moduleList.map(item => item.replace(/\.js/g, ""));
+            return unloadModule({ moduleList, threadID, messageID, botid });
+        }
+        case "info": {
+            const command = global.client.commands.get(moduleList.join("") || "");
+
+            if (!command) return api.sendMessage("the module you entered does not exist.", threadID, messageID);
+
+            const { name, version, hasPermssion, credits, cooldowns, dependencies } = command.config;
+
+            return api.sendMessage(
+                "" + name.toUpperCase() + "\n" +
+                 "coded by : " + credits + "\n" +
+                 "version : " + version + "\n" +
+                 "request permission : " + ((hasPermssion == 0) ? "user" : (hasPermssion == 1) ? "admin" : "bot operator" ) + "\n" +
+                 "timeout : " + cooldowns + " seconds\n" +
+                 `required packages : ${(Object.keys(dependencies || {})).join(", ") || "none"}`,
+                threadID, messageID
+            );
+        }
+        default: {
+            return global.utils.throwError(this.config.name, threadID, messageID);
+        }
     }
 }

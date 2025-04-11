@@ -65,7 +65,8 @@ const formatLog = {
   update: (message) => chalk.hex(activeTheme.info)(`[UPDATE] ${message}`),
   success: (message) => chalk.hex(activeTheme.success)(`[SUCCESS] ${message}`),
   warning: (message) => chalk.hex(activeTheme.warning)(`[WARNING] ${message}`),
-  error: (message) => chalk.hex(activeTheme.error)(`[ERROR] ${message}`)
+  error: (message) => chalk.hex(activeTheme.error)(`[ERROR] ${message}`),
+  info: (message) => chalk.hex(activeTheme.info)(`[INFO] ${message}`)
 };
 
 // Function to check for updates

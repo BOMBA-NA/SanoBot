@@ -76,8 +76,12 @@ const bannerColors = [
   activeTheme.error
 ];
 
+// Load config values for banner display
+const bannerConfig = require("./config.json");
+
 // Generate fancy banner
-const banner = figlet.textSync(global.config.banner || "Sano Developer", {
+const bannerText = bannerConfig.banner || "Sano Developer";
+const banner = figlet.textSync(bannerText, {
   font: "Standard",
   horizontalLayout: "default",
   verticalLayout: "default"
@@ -86,9 +90,9 @@ const banner = figlet.textSync(global.config.banner || "Sano Developer", {
 // Display banner with gradient colors
 console.log(gradient(...bannerColors)(banner));
 console.log(chalk.hex(activeTheme.info)('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'));
-console.log(chalk.hex(activeTheme.success)(' ➤ Author: ') + chalk.hex(activeTheme.warning)(global.config.author));
+console.log(chalk.hex(activeTheme.success)(' ➤ Author: ') + chalk.hex(activeTheme.warning)(bannerConfig.author || "Unknown"));
 console.log(chalk.hex(activeTheme.success)(' ➤ Credits: ') + chalk.hex(activeTheme.warning)('Mot'));
-console.log(chalk.hex(activeTheme.success)(' ➤ Theme: ') + chalk.hex(activeTheme.warning)(global.config.theme || 'neon'));
+console.log(chalk.hex(activeTheme.success)(' ➤ Theme: ') + chalk.hex(activeTheme.warning)(bannerConfig.theme || 'neon'));
 console.log(chalk.hex(activeTheme.success)(' ➤ Version: ') + chalk.hex(activeTheme.warning)(packages.version));
 console.log(chalk.hex(activeTheme.info)('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'));
 
@@ -265,11 +269,10 @@ app.use((req, res) => {
     res.status(500).sendFile(path.join(__dirname, 'public/notFound.html'));
 });
 app.listen(port);
-var configValue;
 try {
     const configPath = "./config.json";
     global.client.configPath = configPath;
-    configValue = require(global.client.configPath);
+    var configValue = require(global.client.configPath);
     log(`loading ${chalk.blueBright(`config`)} file.`, "load");
 } catch (err) {
     return log(`cant load ${chalk.blueBright(`configPath`)} in client.`, "error");
@@ -436,7 +439,7 @@ for (const command of commandsList) {
 
 const evntsPath = "./script/events";
 const evntsList = readdirSync(evntsPath).filter(events => events.endsWith('.js') && !global.config.disabledevnts.includes(events));
-console.log(`${chalk.blue(`\n${global.getText("main", "startloadEvnt")}`)}`)
+console.log(`${chalk.hex(activeTheme.info)(`\n${global.getText("main", "startloadEvnt")}`)}`)
 for (const ev of evntsList) {
     try {
         const events = require(`${evntsPath}/${ev}`);
@@ -846,7 +849,7 @@ async function webLogin(res, appState, botName, botPrefix, username, password, b
 async function loadBot() {
     const appstatePath = './states';
     const listsAppstates = readdirSync(appstatePath).filter(Appstate => Appstate.endsWith('.json'));
-    console.log(chalk.blue('\n'+global.getText("main", "loadingLogin")));
+    console.log(chalk.hex(activeTheme.info)('\n'+global.getText("main", "loadingLogin")));
     let hasErrors = {
         status: false
     };
@@ -894,6 +897,43 @@ async function loadBot() {
     }
 }
 loadBot();
+
+// Auto update function to fetch new commands from GitHub
+function setupAutoUpdate(config) {
+    if (config.enabled) {
+        // Initial check on startup
+        const { checkForUpdates, formatLog } = autoUpdate;
+        console.log(formatLog.update(`Setting up auto-update from GitHub repository: ${config.repo}`));
+        
+        // Run first update check
+        setTimeout(async () => {
+            try {
+                console.log(formatLog.update("Running initial update check..."));
+                await checkForUpdates();
+            } catch (err) {
+                console.log(formatLog.error(`Auto-update error: ${err.message}`));
+            }
+        }, 10000); // Wait 10 seconds after startup
+        
+        // Set up recurring update checks based on config interval (in hours)
+        const intervalHours = config.interval || 24;
+        console.log(formatLog.update(`Scheduled updates will run every ${intervalHours} hours`));
+        
+        setInterval(async () => {
+            try {
+                console.log(formatLog.update("Running scheduled update check..."));
+                await checkForUpdates();
+            } catch (err) {
+                console.log(formatLog.error(`Auto-update error: ${err.message}`));
+            }
+        }, 1000 * 60 * 60 * intervalHours); // Convert hours to milliseconds
+    }
+}
+
+// Initialize auto-update if enabled in config
+if (global.config.autoUpdate && global.config.autoUpdate.enabled) {
+    setupAutoUpdate(global.config.autoUpdate);
+}
 
 function autoRestart(config) {
     if(config.status) {

@@ -10,7 +10,8 @@ module.exports.config = {
   hasPermssion: 1,
   credits: "Sano Developer",
   description: "Admin tools for group management",
-  commandCategory: "admin",
+  category: "group",
+  prefix: true,
   usages: "[kick/ban/mute/unmute/info] [uid or @tag]",
   cooldowns: 5
 };
