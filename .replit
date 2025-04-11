@@ -4,7 +4,7 @@ modules = ["nodejs-20"]
 channel = "stable-24_05"
 
 [workflows]
-runButton = "RunBot"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -18,21 +18,13 @@ args = "FacebookBot"
 [[workflows.workflow]]
 name = "FacebookBot"
 author = "agent"
+mode = "parallel"
 
 [workflows.workflow.metadata]
 agentRequireRestartOnSave = false
 
 [[workflows.workflow.tasks]]
 task = "packager.installForAll"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "node index.js"
-
-[[workflows.workflow]]
-name = "RunBot"
-author = 41328763
-mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

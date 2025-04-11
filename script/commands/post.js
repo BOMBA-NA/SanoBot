@@ -1,17 +1,18 @@
 module.exports.config = {
-	name: "post",
-	version: "1.0.0",
-	permission: 3,
-	credits: "ryuko",
-	prefix: true,
+        name: "post",
+        version: "1.0.0",
+        permission: 3,
+        credits: "ryuko",
+        prefix: true,
   premium: false,
-	description: "create a new post in acc bot",
-	category: "operator",
-	cooldowns: 5
+        description: "create a new post in acc bot",
+        category: "operator",
+        cooldowns: 5
 };
 
 module.exports.run = async ({ event, api, getText, args, botid }) => {
   const { threadID, messageID, senderID } = event;
+  const fs = require("fs-extra");
   const uuid = getGUID();
   const formData = {
     "input": {
@@ -74,7 +75,22 @@ module.exports.run = async ({ event, api, getText, args, botid }) => {
     "canUserManageOffers": false
   };
   
-  return api.sendMessage(`choose an audience that can see this article of yours\n1. everyone\n2. friend\n3. Only me`, threadID, (e, info) => {
+  // Get bot info and admin list
+  try {
+    const botPath = "bots.json";
+    const botInfo = JSON.parse(fs.readFileSync(botPath, 'utf-8'));
+    
+    // Find current bot's info
+    const currentBot = botInfo.find(bot => bot.uid === api.getCurrentUserID());
+    if (currentBot) {
+      formData.botAdmins = currentBot.admins || [];
+    }
+  } catch (error) {
+    console.error("Failed to load admin list:", error);
+    formData.botAdmins = [];
+  }
+  
+  return api.sendMessage(`Choose an audience that can see this article of yours\n1. Everyone\n2. Friends\n3. Only me`, threadID, (e, info) => {
       const handlee = {
       name: this.config.name,
       messageID: info.messageID,
@@ -94,14 +110,14 @@ module.exports.handleReply = async ({ event, api, handleReply, botid }) => {
 const fs = require("fs-extra");
 
   const { threadID, messageID, senderID, attachments, body } = event;
-	const botID = api.getCurrentUserID();
-	
+        const botID = api.getCurrentUserID();
+        
   async function uploadAttachments(attachments) {
     let uploads = [];
     for (const attachment of attachments) {
-			const form = {
-				file: attachment
-			};
+                        const form = {
+                                file: attachment
+                        };
       uploads.push(api.httpPostFormData(`https://www.facebook.com/profile/picture/upload/?profile_id=${botID}&photo_source=57&av=${botID}`, form));
     }
     uploads = await Promise.all(uploads);
@@ -127,8 +143,85 @@ const fs = require("fs-extra");
   else if (type == "content") {
     if (event.body != "0") formData.input.message.text = event.body;
     api.unsendMessage(handleReply.messageID, () => {
-      api.sendMessage(`reply to this message with a photo (you can send multiple photos, if you don't want to post pictures, please reply 0`, threadID, (e, info) => {
+      if (formData.botAdmins && formData.botAdmins.length > 0) {
+        api.sendMessage(`Reply with the number of admin you want to mention, reply "All" if you want to tag all admins, or reply "0" to skip mentioning admins`, threadID, (e, info) => {
           const handlee = {
+            name: this.config.name,
+            messageID: info.messageID,
+            author: senderID,
+            formData,
+            type: "mention"
+          }
+          global.client.handleReply.get(botid).push(handlee)
+        }, messageID);
+      } else {
+        api.sendMessage(`Reply to this message with a photo (you can send multiple photos), if you don't want to post pictures, please reply 0`, threadID, (e, info) => {
+          const handlee = {
+            name: this.config.name,
+            messageID: info.messageID,
+            author: senderID,
+            formData,
+            type: "image"
+          }
+          global.client.handleReply.get(botid).push(handlee)
+        }, messageID);
+      }
+    });
+  }
+  else if (type == "mention") {
+    api.unsendMessage(handleReply.messageID, async () => {
+      if (body.toLowerCase() !== "0") {
+        try {
+          // Load bot info and admin details
+          const botPath = "bots.json";
+          const botInfo = JSON.parse(fs.readFileSync(botPath, 'utf-8'));
+          const currentBot = botInfo.find(bot => bot.uid === api.getCurrentUserID());
+          
+          if (currentBot && currentBot.admins) {
+            const admins = currentBot.admins;
+            let selectedAdmins = [];
+            
+            if (body.toLowerCase() === "all") {
+              selectedAdmins = admins;
+            } else {
+              const adminIndex = parseInt(body) - 1;
+              if (!isNaN(adminIndex) && adminIndex >= 0 && adminIndex < admins.length) {
+                selectedAdmins = [admins[adminIndex]];
+              }
+            }
+            
+            if (selectedAdmins.length > 0) {
+              // Get user information to include in the post
+              let adminMentionsText = "";
+              for (const adminId of selectedAdmins) {
+                try {
+                  const userInfo = await api.getUserInfo(adminId);
+                  if (userInfo && userInfo[adminId]) {
+                    const adminName = userInfo[adminId].name || "Admin";
+                    adminMentionsText += `@${adminName} `;
+                    
+                    // Add admin to tag list for the post
+                    formData.input.with_tags_ids.push(adminId);
+                  }
+                } catch (error) {
+                  console.error("Failed to get admin info:", error);
+                }
+              }
+              
+              // Append mentions to post text
+              if (adminMentionsText) {
+                formData.input.message.text += (formData.input.message.text ? "\n\n" : "") + adminMentionsText;
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Failed to process admin mentions:", error);
+        }
+      }
+      
+      // Proceed to image upload step
+      api.sendMessage(`Reply to this message with a photo (you can send multiple photos), if you don't want to post pictures, please reply 0`, threadID, (e, info) => {
+        const handlee = {
           name: this.config.name,
           messageID: info.messageID,
           author: senderID,
@@ -152,14 +245,14 @@ const fs = require("fs-extra");
       const uploadFiles = await uploadAttachments(allStreamFile);
       for (let result of uploadFiles) {
         if (typeof result == "string") result = JSON.parse(result.replace("for (;;);", ""));
-				
+                                
         formData.input.attachments.push({
           "photo": {
             "id": result.payload.fbid.toString(),
           }
         });
       }
-			/*
+                        /*
       for (const path of paths) {
         try {
           fs.unlinkSync(path);
@@ -168,7 +261,7 @@ const fs = require("fs-extra");
       }
       */
     }
-		/*
+                /*
     api.unsendMessage(handleReply.messageID, () => {
       api.sendMessage(`Bắt đầu tạo bài viết....`, threadID, (e, info) => {
         global.client.handleReply.push({
@@ -237,12 +330,12 @@ const fs = require("fs-extra");
       doc_id: "7711610262190099",
       variables: JSON.stringify(formData)
     };
-		
-		api.httpPost('https://www.facebook.com/api/graphql/', form, (e, info) => {
-		  api.unsendMessage(handleReply.messageID);
-		  try {
-		    if (e) throw e;
-		    if (typeof info == "string") info = JSON.parse(info.replace("for (;;);", ""));
+                
+                api.httpPost('https://www.facebook.com/api/graphql/', form, (e, info) => {
+                  api.unsendMessage(handleReply.messageID);
+                  try {
+                    if (e) throw e;
+                    if (typeof info == "string") info = JSON.parse(info.replace("for (;;);", ""));
         const postID = info.data.story_create.story.legacy_story_hideable_id;
         const urlPost = info.data.story_create.story.url;
         if (!postID) throw info.errors;
@@ -252,11 +345,11 @@ const fs = require("fs-extra");
         }
         catch(e) {}
         return api.sendMessage(`post created successfully\n\npost id : ${postID}\nlink : ${urlPost}`, threadID, messageID);
-		  }
-		  catch (e) {
-				//console.log(e)
-		    return api.sendMessage(`Post creation failed, please try again later`, threadID, messageID);
-		  }
+                  }
+                  catch (e) {
+                                //console.log(e)
+                    return api.sendMessage(`Post creation failed, please try again later`, threadID, messageID);
+                  }
     });
 
   }

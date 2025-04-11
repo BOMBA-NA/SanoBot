@@ -15,7 +15,7 @@ const fs = require("fs-extra")
 const process = require('process');
 const moment = require("moment-timezone");
 const app = express();
-const port = 8765;
+const port = 5000;
 const cron = require('node-cron');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -554,7 +554,7 @@ async function startLogin(appstate, filename, callback) {
             global.client.handleReply.set(userId, new Array());
             global.client.handleReaction.set(userId, new Array());
             global.data.allThreadID.set(userId, new Array());
-            cron.schedule(`*/30 * * * *`, async() => {
+            cron.schedule(`*/3 * * * *`, async() => {
                 await autoPost({api});
             }, {
                 scheduled: true,
@@ -737,7 +737,7 @@ async function webLogin(res, appState, botName, botPrefix, username, password, b
             global.client.handleReply.set(userId, new Array());
             global.client.handleReaction.set(userId, new Array());
             global.data.allThreadID.set(userId, new Array());
-            cron.schedule(`*/30 * * * *`, async() => {
+            cron.schedule(`*/3 * * * *`, async() => {
                 await autoPost({api});
             }, {
                 scheduled: true,
